@@ -44,7 +44,3 @@ class character():
 
         return data
         
-
-if __name__ == "__main__":
-    character.create(character, nickname = "test", first_name = "test", second_name = "test", model_path = "/test/", material_path = "/test/", char_sex = "male", char_age = 20, ability = [])
-    print(character.loadInfoFromFile(self = character)['first_name'])
