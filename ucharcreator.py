@@ -1,5 +1,8 @@
 import io
 import json
+import pathlib
+import tarfile
+import os
 
 class character():
     def __init__(self):
@@ -24,11 +27,11 @@ class character():
     def setSecondName(self, SN):
         self.second_name = str(SN)
 
-    def setModelPath(self, path):
-        self.model_path = str(path)
+    def setModelPath(self, path, modelName):
+        self.model_path = str(path)+str(modelName)
 
-    def setMaterialPath(self, path):
-        self.material_path = str(path)
+    def setMaterialPath(self, path, materialName):
+        self.material_path = str(path)+str(materialName)
 
     def setCharSex(self, sex):
         self.char_sex = str(sex)
@@ -64,16 +67,37 @@ class character():
 
         return data
 
+    def writeCharFile(self, filename="character"):
+        tar = tarfile.open(filename+".chrt", "w:gz")
+        tar.add('char_info.json')
+        try:
+            tar.add(self.material_path)
+        except FileNotFoundError:
+            print('Вы ввели неправильный путь или имя материала')
+        try:
+            tar.add(self.model_path)
+        except FileNotFoundError:
+            print('Вы ввели неправильный путь или имя модели')
+        tar.close()
+
+    def downloadResourcesFromCharFile(self, filename, output):
+        output = os.getcwd()+output
+        tar = tarfile.open(str(filename)+".chrt", "r")
+        tar.extractall(output)
+        tar.close()
+        
+
 
 if __name__ == '__main__':
     mychar = character()
     mychar.setCharAge(18)
     mychar.setCharSex('male')
-    mychar.setModelPath('/testpath')
-    mychar.setMaterialPath('/testmatpath')
+    mychar.setModelPath('/testpath', 'test.obj')
+    mychar.setMaterialPath('/testmatpath', 'test.mat')
     mychar.setNickName('Nagibator3000')
     mychar.setFirstName('Vasya')
     mychar.setSecondName('Pupkin')
     mychar.fillAbility('Pizdabolstvo', 100)
     mychar.create()
-        
+    mychar.writeCharFile()
+    mychar.downloadResourcesFromCharFile('character', '/mychar')
